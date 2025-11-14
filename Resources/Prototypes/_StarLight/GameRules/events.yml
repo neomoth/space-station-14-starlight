@@ -103,6 +103,15 @@
     - type: LoadMapRule
       gridPath: /Maps/_Starlight/Shuttles/CC-NT/ERTShuttle.yml
 
+  # Quini's ERT Shuttle
+- type: entity
+  parent: BaseGameRule
+  id: QERTShuttleSpawn
+  components:
+    - type: RuleGrids
+    - type: LoadMapRule
+      gridPath: /Quini98/ERT/SecMed.yml
+      
       #Pig's DS Shuttle
 - type: entity
   parent: BaseGameRule
