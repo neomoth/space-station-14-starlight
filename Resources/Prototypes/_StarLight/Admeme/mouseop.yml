@@ -1,27 +1,27 @@
 - type: inventoryTemplate
   id: InvMouseops
   slots:
-    - name: outerClothingpin
+    - name: outerClothing
       slotTexture: suit
       slotFlags: OUTERCLOTHING
       stripTime: 6
       uiWindowPos: 1,1
       strippingWindowPos: 1,2
       displayName: Suit
-    - name: glovespin
+    - name: gloves
       slotTexture: gloves
       slotFlags: GLOVES
       uiWindowPos: 2,1
       strippingWindowPos: 2,2
       displayName: Gloves
-    - name: earspin
+    - name: ears
       slotTexture: ears
       slotFlags: EARS
       stripTime: 3
       uiWindowPos: 2,3
       strippingWindowPos: 1,8
       displayName: Ears
-    - name: idmouse
+    - name: id
       slotTexture: id
       fullTextureName: template_small
       slotFlags: IDCARD
@@ -30,7 +30,7 @@
       uiWindowPos: 2,1
       strippingWindowPos: 2,4
       displayName: ID
-    - name: backpin
+    - name: back
       slotTexture: back
       slotFlags: BACK
       slotGroup: SecondHotbar
@@ -160,6 +160,7 @@
     tags:
     - CannotSuicide
     - VimPilot
+    - CanPilot
     - AnomalyHost
   - type: Temperature
     heatDamageThreshold: 423
@@ -186,15 +187,30 @@
     prototypes: [ GearNyrMouseOps ]
   - type: NightVision 
   - type: ThermalVision
+    ignoreFlashImmunityRestriction: true
+  - type: LanguageSpeaker
+  - type: LanguageKnowledge
+    speaks:
+      - GalacticCommon
+      - Mouse
+    understands:
+      - GalacticCommon
+      - Mouse
+  - type: Access
+    groups:
+      - Syndicate
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 5
+    baseSprintSpeed: 10
 
 - type: startingGear
   id: GearNyrMouseOps
   equipment:
-    outerClothingpin: ClothingOuterHardsuitSyndieMouseOps
-    earspin: ClothingHeadsetAltSyndicate
-    idmouse: AgentIDCard
-    glovespin: ClothingHandsGlovesCombatmous
-    backpin: ClothingBackpackDuffelSyndicateAmmoMouse
+    outerClothing: ClothingOuterHardsuitSyndieMouseOps
+    ears: ClothingHeadsetAltSyndicate
+    id: AgentIDCard
+    gloves: ClothingHandsGlovesCombatmous
+    back: ClothingBackpackDuffelSyndicateAmmoMouse
 
 - type: entity
   parent: ClothingHandsGlovesCombat
