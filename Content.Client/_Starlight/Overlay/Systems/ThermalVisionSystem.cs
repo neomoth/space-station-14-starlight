@@ -84,13 +84,10 @@ public sealed class ThermalVisionSystem : SharedThermalVisionSystem
     {
         if (_player.LocalSession?.AttachedEntity != uid) return;
 
-        // SL start
-        //only add if its active
-        if (!TryComp<ThermalVisionComponent>(uid, out var thermalVision) || !thermalVision.Active) return; // <- moved up
+        //if they currently have flash immunity, dont add
+        if (_flashImmunity.HasFlashImmunityVisionBlockers(uid)) return;
         
-        //if they currently have flash immunity, dont add, unless bypassing it
-        if (!thermalVision.IgnoreFlashImmunityRestriction && _flashImmunity.HasFlashImmunityVisionBlockers(uid)) return;
-        // SL end
+        if (!TryComp<ThermalVisionComponent>(uid, out var thermalVision) || !thermalVision.Active) return;
 
         if (_effect != null) return;
         
