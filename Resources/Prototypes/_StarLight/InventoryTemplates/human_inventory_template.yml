@@ -97,7 +97,7 @@
       strippingWindowPos: 2,5
       dependsOn: outerClothing
       dependsOnComponents:
-      - type: AllowSuitStorage
+        - AllowSuitStorage # Starlight-edit
       displayName: Suit Storage
     - name: suitstorage2
       slotTexture: suit_storage
@@ -108,7 +108,7 @@
       strippingWindowPos: 2,3
       dependsOn: outerClothing
       dependsOnComponents:
-      - type: AllowSuitStorage
+        - AllowSuitStorage
       displayName: Suit Storage 2
     - name: id
       slotTexture: id
@@ -233,7 +233,7 @@
       strippingWindowPos: 2,5
       dependsOn: outerClothing
       dependsOnComponents:
-      - type: AllowSuitStorage
+        - AllowSuitStorage
       displayName: Suit Storage
     - name: belt
       slotTexture: belt

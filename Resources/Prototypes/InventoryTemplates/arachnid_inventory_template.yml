@@ -147,5 +147,5 @@
       strippingWindowPos: 2,5
       dependsOn: outerClothing
       dependsOnComponents:
-      - type: AllowSuitStorage
+      - AllowSuitStorage # Starlight-edit
       displayName: Suit Storage

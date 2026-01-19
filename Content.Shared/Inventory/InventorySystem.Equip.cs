@@ -34,6 +34,7 @@ public abstract partial class InventorySystem
     [Dependency] private readonly SharedTransformSystem _transform = default!;
     [Dependency] private readonly EntityWhitelistSystem _whitelistSystem = default!;
     [Dependency] private readonly SharedStrippableSystem _strippable = default!;
+    [Dependency] private readonly IComponentFactory _factory = default!; // Starlight
 
     private static readonly ProtoId<ItemSizePrototype> PocketableItemSize = "Small";
 
@@ -253,18 +254,28 @@ public abstract partial class InventorySystem
             if (!TryGetSlotEntity(target, slotDefinition.DependsOn, out EntityUid? slotEntity, inventory))
                 return false;
 
-            if (slotDefinition.DependsOnComponents is { } componentRegistry)
+            // Starlight begin
+            // if (slotDefinition.DependsOnComponents is { } componentRegistry)
+            // {
+            //     foreach (var (_, entry) in componentRegistry)
+            //     {
+            //         if (!HasComp(slotEntity, entry.Component.GetType()))
+            //             return false;
+            //
+            //         if (TryComp<AllowSuitStorageComponent>(slotEntity, out var comp) &&
+            //             _whitelistSystem.IsWhitelistFailOrNull(comp.Whitelist, itemUid))
+            //             return false;
+            //     }
+            // }
+            foreach (var compName in slotDefinition.DependsOnComponents)
             {
-                foreach (var (_, entry) in componentRegistry)
-                {
-                    if (!HasComp(slotEntity, entry.Component.GetType()))
-                        return false;
-
-                    if (TryComp<AllowSuitStorageComponent>(slotEntity, out var comp) &&
-                        _whitelistSystem.IsWhitelistFailOrNull(comp.Whitelist, itemUid))
-                        return false;
-                }
+                if (!_factory.TryGetRegistration(compName, out var registration)) continue;
+                if (!HasComp(slotEntity, registration.Type)) return false;
             }
+
+            if (TryComp<AllowSuitStorageComponent>(slotEntity, out var comp) &&
+                _whitelistSystem.IsWhitelistFailOrNull(comp.Whitelist, itemUid)) return false;
+            //Starlight end
         }
 
         var fittingInPocket = slotDefinition.SlotFlags.HasFlag(SlotFlags.POCKET) &&

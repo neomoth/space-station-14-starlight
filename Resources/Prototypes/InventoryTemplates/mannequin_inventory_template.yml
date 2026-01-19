@@ -52,7 +52,7 @@
       strippingWindowPos: 1,3
       dependsOn: outerClothing
       dependsOnComponents:
-      - type: AllowSuitStorage
+        - AllowSuitStorage # Starlight-edit
       displayName: Suit Storage
     - name: back
       slotTexture: back

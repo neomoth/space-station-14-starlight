@@ -2,6 +2,7 @@ using System.Numerics;
 using Content.Shared.Strip;
 using Content.Shared.Whitelist;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Serialization; // Starlight
 
 namespace Content.Shared.Inventory;
 
@@ -14,6 +15,7 @@ public sealed partial class InventoryTemplatePrototype : IPrototype
 }
 
 [DataDefinition]
+[Serializable, NetSerializable]
 public sealed partial class SlotDefinition
 {
     [DataField("name", required: true)] public string Name { get; private set; } = string.Empty;
@@ -35,7 +37,7 @@ public sealed partial class SlotDefinition
 
     [DataField("dependsOn")] public string? DependsOn { get; private set; }
 
-    [DataField("dependsOnComponents")] public ComponentRegistry? DependsOnComponents { get; private set; }
+    [DataField("dependsOnComponents")] public List<string> DependsOnComponents { get; private set; } = []; // Starlight-edit | There was zero reason for this to be a component registry. Was not utilized other than component names.
 
     [DataField("displayName", required: true)]
     public string DisplayName { get; private set; } = string.Empty;

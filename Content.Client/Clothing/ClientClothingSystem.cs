@@ -59,6 +59,7 @@ public sealed class ClientClothingSystem : ClothingSystem
 
         SubscribeLocalEvent<ClothingComponent, GetEquipmentVisualsEvent>(OnGetVisuals);
         SubscribeLocalEvent<InventoryComponent, InventoryTemplateUpdated>(OnInventoryTemplateUpdated);
+        SubscribeLocalEvent<InventoryComponent, CustomInventorySlotsUpdated>(OnCustomSlotsUpdated); // Starlight
 
         SubscribeLocalEvent<InventoryComponent, VisualsChangedEvent>(OnVisualsChanged);
         SubscribeLocalEvent<SpriteComponent, DidUnequipEvent>(OnDidUnequip);
@@ -85,6 +86,11 @@ public sealed class ClientClothingSystem : ClothingSystem
     {
         UpdateAllSlots(ent.Owner, ent.Comp);
     }
+    
+    //Starlight begin
+    private void OnCustomSlotsUpdated(Entity<InventoryComponent> ent, ref CustomInventorySlotsUpdated args) =>
+        UpdateAllSlots(ent.Owner, ent.Comp);
+    //Starlight end
 
     private void UpdateAllSlots(
         EntityUid uid,

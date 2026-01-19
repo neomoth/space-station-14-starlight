@@ -76,16 +76,48 @@ public partial class InventorySystem : EntitySystem
 
     protected virtual void OnInit(Entity<InventoryComponent> ent, ref ComponentInit args)
     {
+        Log.Log(LogLevel.Info, "RUNNING INIT");
+        UpdateCustomSlots(ent);
         UpdateInventoryTemplate(ent);
     }
 
     private void AfterAutoState(Entity<InventoryComponent> ent, ref AfterAutoHandleStateEvent args)
     {
+        Log.Log(LogLevel.Info, "RUNNING AUTOSTATE");
+        UpdateCustomSlots(ent);
         UpdateInventoryTemplate(ent);
     }
+    
+    //Starlight begin
+    private void UpdateCustomSlots(Entity<InventoryComponent> ent)
+    {
+        Log.Log(LogLevel.Info, "RUNNING CUSTOMSLOTS");
+        ent.Comp.CustomSlots ??= [];
+        ent.Comp.CustomContainers ??= [];
+        foreach (var container in ent.Comp.CustomContainers.Where(container =>
+                     ent.Comp.CustomSlots.All(s => s.Name != container.ID)))
+        {
+            _containerSystem.EmptyContainer(container);
+            _containerSystem.ShutdownContainer(container);
+        }
+
+        Log.Log(LogLevel.Info, $"{ent.Comp.CustomSlots}");
+        
+        ent.Comp.CustomContainers.Clear();
+        foreach (var container in ent.Comp.CustomSlots.Select(slot =>
+                     _containerSystem.EnsureContainer<ContainerSlot>(ent.Owner, slot.Name)))
+        {
+            container.OccludesLight = false;
+            ent.Comp.CustomContainers.Add(container);
+            Log.Log(LogLevel.Info, $"ADDED CONTAINER!! {container.ID}");
+        }
+        Dirty(ent);
+    }
+    //Starlight end
 
     protected virtual void UpdateInventoryTemplate(Entity<InventoryComponent> ent)
     {
+        Log.Log(LogLevel.Info, "RUNNING INVENTORYTEMPLATE");
         if (!_prototypeManager.Resolve(ent.Comp.TemplateId, out var invTemplate))
             return;
 
@@ -233,6 +265,7 @@ public partial class InventorySystem : EntitySystem
             return;
 
         ent.Comp.TemplateId = newTemplate;
+        UpdateCustomSlots(ent);
         UpdateInventoryTemplate(ent);
         Dirty(ent);
     }
@@ -247,20 +280,30 @@ public partial class InventorySystem : EntitySystem
         private readonly ContainerSlot[] _containers;
         private readonly SlotFlags _flags;
         private int _nextIdx = 0;
-        public static InventorySlotEnumerator Empty = new(Array.Empty<SlotDefinition>(), Array.Empty<ContainerSlot>());
+        public static InventorySlotEnumerator Empty = new(Array.Empty<SlotDefinition>(), [], Array.Empty<ContainerSlot>(), []); // Starlight-edit
 
         public InventorySlotEnumerator(InventoryComponent inventory, SlotFlags flags = SlotFlags.All)
-            : this(inventory.Slots, inventory.Containers, flags)
+            : this(inventory.Slots, inventory.CustomSlots, inventory.Containers, inventory.CustomContainers, flags) // Starlight-edit
         {
         }
 
-        public InventorySlotEnumerator(SlotDefinition[] slots, ContainerSlot[] containers, SlotFlags flags = SlotFlags.All)
+        public InventorySlotEnumerator(SlotDefinition[] slots, List<SlotDefinition>? customSlots, ContainerSlot[] containers, List<ContainerSlot>? customContainers, SlotFlags flags = SlotFlags.All) // Starlight-edit
         {
+            customSlots ??= [];
+            customContainers ??= [];
             DebugTools.Assert(flags != SlotFlags.NONE);
             DebugTools.AssertEqual(slots.Length, containers.Length);
+            IoCManager.Resolve<ILogManager>().GetSawmill("slotenumerator").Log(LogLevel.Info, $"{customSlots.Count}, {customContainers.Count}");
+            DebugTools.AssertEqual(customSlots.Count, customContainers.Count); // Starlight
             _flags = flags;
-            _slots = slots;
-            _containers = containers;
+            //Starlight begin
+            var slotList = slots.ToList();
+            var containerList = containers.ToList();
+            if(customSlots.Count > 0) slotList.AddRange(customSlots);
+            if(customContainers.Count > 0) containerList.AddRange(customContainers);
+            _slots = slotList.ToArray();
+            _containers = containerList.ToArray();
+            //Starlight end
         }
 
         public bool MoveNext([NotNullWhen(true)] out ContainerSlot? container)

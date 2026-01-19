@@ -6,7 +6,7 @@ using Robust.Shared.Prototypes;
 namespace Content.Shared.Inventory;
 
 [RegisterComponent, NetworkedComponent]
-[Access(typeof(InventorySystem))]
+[Access(typeof(InventorySystem), typeof(InventorySystem.InventorySlotEnumerator))] // Starlight-edit
 [AutoGenerateComponentState(true)]
 public sealed partial class InventoryComponent : Component
 {
@@ -26,6 +26,18 @@ public sealed partial class InventoryComponent : Component
         get => TemplateId;
         set => IoCManager.Resolve<IEntityManager>().System<InventorySystem>().SetTemplateId((Owner, this), value);
     }
+    
+    // Starlight begin
+    /// <summary>
+    /// <see cref="Shared.Inventory.SlotDefinition"/>s written into here via VV should automatically propagate.
+    /// </summary>
+    [DataField, AutoNetworkedField] public List<SlotDefinition>? CustomSlots = [];
+    
+    /// <summary>
+    /// <see cref="Robust.Shared.Containers.ContainerSlot"/>s managed by <see cref="CustomSlots"/> 
+    /// </summary>
+    [ViewVariables] public List<ContainerSlot>? CustomContainers = [];
+    // Starlight end
 
     [DataField, AutoNetworkedField]
     public string? SpeciesId;
@@ -65,3 +77,11 @@ public sealed partial class InventoryComponent : Component
 /// </summary>
 [ByRefEvent]
 public struct InventoryTemplateUpdated;
+
+//Starlight begin
+/// <summary>
+/// Raised if <see cref="InventoryComponent.CustomSlots"/> gets updated via vv.
+/// </summary>
+[ByRefEvent]
+public struct CustomInventorySlotsUpdated;
+//Starlight end
