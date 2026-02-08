@@ -381,6 +381,17 @@ public abstract partial class SharedGunSystem : EntitySystem
         // Listen it just makes the other code around it easier if shots == 0 to do this.
         if (shots > 0)
             RaiseLocalEvent(gun, ev);
+        
+        //Starlight begin
+        foreach (var shot in ev.Ammo)
+        {
+            if (shot.Shootable is not AmmoComponent ammoComp) continue;
+            if (gun.Comp.NoMuzzleFlash)
+                ammoComp.MuzzleFlash = null;
+            else if (gun.Comp.MuzzleFlashOverride is not null)
+                ammoComp.MuzzleFlash = gun.Comp.MuzzleFlashOverride;
+        }
+        //Starlight end
 
         DebugTools.Assert(ev.Ammo.Count <= shots);
         DebugTools.Assert(shots >= 0);
@@ -464,6 +475,15 @@ public abstract partial class SharedGunSystem : EntitySystem
         bool throwItems = false)
     {
         var shootable = EnsureShootable(ammo);
+        //Starlight begin
+        if (shootable is AmmoComponent ammoComp)
+        {
+            if (gun.Comp.NoMuzzleFlash)
+                ammoComp.MuzzleFlash = null;
+            else if (gun.Comp.MuzzleFlashOverride is not null)
+                ammoComp.MuzzleFlash = gun.Comp.MuzzleFlashOverride;
+        }
+        //Starlight end
         Shoot(gun, new List<(EntityUid? Entity, IShootable Shootable)>(1) { (ammo, shootable) }, fromCoordinates, toCoordinates, out userImpulse, user, throwItems);
     }
 

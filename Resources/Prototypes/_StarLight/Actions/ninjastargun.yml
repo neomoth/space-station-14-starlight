@@ -1,0 +1,13 @@
+- type: entity
+  id: NinjaStarGun
+  name: throwing star
+  description: Allows you to throw stars at your enemies. Must have a free hand to use.
+  components:
+    - type: Action
+      useDelay: 1
+      itemIconStyle: BigAction
+      icon:
+        sprite: Objects/Weapons/Throwable/throwing_star.rsi
+        state: icon
+    - type: InstantAction
+      event: !type:NinjaStarGunActionEvent
