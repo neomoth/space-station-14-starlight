@@ -1,7 +1,8 @@
 - type: entity
-  id: WeaponNinjaStarGun
+  id: WeaponNinjaStarGunBase
   parent: BaseItem
-  name: throwing star
+  name: ninja throwing star
+  abstract: true
   components:
     - type: Sprite
       sprite: Objects/Weapons/Throwable/throwing_star.rsi
@@ -9,7 +10,6 @@
         - state: icon
           map: [ "base" ]
     - type: Appearance
-    - type: Unremoveable
     - type: Gun
       clumsyProof: true
       cameraRecoilScalar: 0
@@ -28,8 +28,25 @@
       rechargeSound: null
 
 - type: entity
-  parent: ThrowingStar
+  id: WeaponNinjaStarGun
+  parent: WeaponNinjaStarGunBase
+  components:
+    - type: Unremoveable
+    - type: BasicEntityAmmoProvider
+      proto: ThrowingStarProjectileMulti
+
+- type: entity
+  id: WeaponNinjaStarGunAdmeme
+  parent: WeaponNinjaStarGunBase
+  suffix: Admeme
+  components:
+    - type: Gun
+      fireRate: 10
+
+- type: entity
+  parent: ThrowingStarNinja
   id: ThrowingStarProjectile
+  categories: [HideSpawnMenu]
   components:
     - type: DamageOtherOnHit
       damage:
@@ -42,8 +59,9 @@
       damage: 6
 
 - type: entity
-  parent: ThrowingStar
   id: ThrowingStarProjectileAdmeme
+  categories: [HideSpawnMenu]
+  parent: ThrowingStar
   suffix: Admeme
   name: throwing star gun
   components:
@@ -56,3 +74,12 @@
       damage: 11
     - type: StaminaDamageOnEmbed
       damage: 5
+
+- type: entity
+  id: ThrowingStarProjectileMulti
+  categories: [HideSpawnMenu]
+  components:
+    - type: ProjectileSpread
+      proto: ThrowingStarProjectile
+      count: 4
+      spread: 30
