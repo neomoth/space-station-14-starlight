@@ -1,0 +1,8 @@
+- type: entity
+  id: SLTutorialHolopad
+  parent: Holopad
+  suffix: Tutorial
+  components:
+    - !Remove type: Holopad
+    - type: TutorialHoloPoint
+      room: 0
