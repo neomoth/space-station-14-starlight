@@ -74,6 +74,16 @@ using LookupFlags = Robust.Shared.GameObjects.LookupFlags;
 
 namespace Content.Server._Functional.TutorialServer;
 
+/*
+ * TODO: SOMEBODY PLEASE REWRITE THIS ENTIRE SYSTEM UNDER _Starlight PLEASE.
+ * ITS A MESS AND FULL OF AI SLOPCODE THAT BARELY WORKS. I WOULD DO IT BUT
+ * I GENUINELY CANNOT BE BOTHERED RIGHT NOW GIVEN THAT I HAVE LIKE SEVERAL
+ * OTHER THINGS GOING ON THAT I NEED TO MANAGE AND WORK ON.
+ * FYI entire system meaning everything related to it not just TutorialServerRuleSystem.
+ * Also ideally make a shared tutorial system that this calls for stuff and make
+ * the rest of the stuff shared+predicted etc
+ */
+
 /// <summary>
 /// Orchestrates the Functional Tutorial Server: picker, private maps, sessions, respawn loop.
 /// </summary>
