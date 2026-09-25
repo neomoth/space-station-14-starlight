@@ -174,4 +174,38 @@ public sealed partial class RoleCommand : ToolshedCommand
     [CommandImplementation("doroleupdate")]
     public IEnumerable<EntityUid> DoRoleUpdate(IInvocationContext ctx, [PipedArgument] IEnumerable<EntityUid> uid) =>
         uid.Select(x => DoRoleUpdate(ctx, x));
+
+    [CommandImplementation("with")]
+    public IEnumerable<EntityUid> WithRole([PipedArgument] IEnumerable<EntityUid> uids,
+        [CommandArgument(typeof(EntProtoIdWithCompCompletionParser<MindRoleComponent>))]
+        EntProtoId mindRole,
+        [CommandInverted] bool inverted)
+    {
+        _mind ??= GetSys<MindSystem>();
+        _roles ??= GetSys<RoleSystem>();
+        List<EntityUid> results = [];
+        foreach (var uid in uids)
+        {
+            if (!_mind.TryGetMind(uid, out var mindUid, out _))
+            {
+                if (inverted) results.Add(uid);
+                continue;
+            }
+
+            if (_roles.MindHasRole(mindUid, mindRole, out _) ^ inverted) results.Add(uid);
+        }
+        return results;
+    }
+
+    [CommandImplementation("has")]
+    public bool HasRole([PipedArgument] EntityUid uid,
+        [CommandArgument(typeof(EntProtoIdWithCompCompletionParser<MindRoleComponent>))] EntProtoId mindRole,
+        [CommandInverted] bool inverted)
+    {
+        _mind ??= GetSys<MindSystem>();
+        _roles ??= GetSys<RoleSystem>();
+        if (!_mind.TryGetMind(uid, out var mindUid, out _))
+            return inverted;
+        return _roles.MindHasRole(mindUid, mindRole, out _) ^ inverted;
+    }
 }
