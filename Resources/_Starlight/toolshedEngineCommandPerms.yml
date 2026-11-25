@@ -7,3 +7,6 @@
 - Flags: VAREDIT
   Commands:
     - comp
+
+- Commands:
+    - tp:to

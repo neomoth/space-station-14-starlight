@@ -548,6 +548,11 @@ namespace Content.Server.Administration.Managers
         {
             var cmdName = command.Cmd.Name;
 
+            // Starlight begin
+            if (TryGetSubCommandFlags(command, out flags))
+                return true;
+            // Starlight end
+
             if (_toolshedCommandPermissions.AnyCommands.Contains(cmdName))
             {
                 // Anybody can use this command.
